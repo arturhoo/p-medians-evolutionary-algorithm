@@ -1,0 +1,82 @@
+\documentclass[12pt]{article}
+\usepackage{sbc-template}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{subfigure}
+\usepackage{times,amsmath,epsfig}
+\usepackage{graphicx,url}
+\usepackage{multirow}
+ \makeatletter
+ \newif\if@restonecol
+ \makeatother
+ \let\algorithm\relax
+ \let\endalgorithm\relax
+\usepackage{listings}
+\usepackage{float}
+\usepackage[lined,algonl,ruled]{algorithm2e}
+\usepackage{multirow}
+\usepackage[brazil]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{enumitem}
+
+\lstset{ %
+language=Gnuplot,                  % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=2,                   % the step between two line-numbers. If it's 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,	                % adds a frame around the code
+tabsize=2,	                    % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+title=\lstname,                 % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\setlist{nolistsep}
+
+\sloppy
+
+\title{TRABALHO PRÁTICO 1: \\Um Algoritmo Genético para resolver o problema da p-Mediana com restrições de capacidade}
+
+\author{Artur Rodrigues}
+
+\address{Departamento de Ciência da Computação \\ Universidade Federal de Minas Gerais (UFMG)
+\email{artur@dcc.ufmg.br}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{INTRODUÇÃO}
+
+O \textit{Single Source Fixed Charge Network Flow Problem} é representado por meio de um grafo contendo apenas um nó de oferta e os demais nós de demanda ou transbordo. Esses nós são conectados através de arcos com capacidades limitadas superiormente e custos fixos não negativos, contabilizados sempre que existir um fluxo em uma aresta, independentemente da intensidade.
+
+Seja um grafo direcionado \textit{G = (N,~A)} com vetor de demandas $b$, de custos $c$ e de limites superiores nos arcos $u$, todos com valores inteiros, desejamos selecionar um conjunto de arcos $A' \subseteq A$ e atribuir fluxos positivos a esses, de modo que as demandas sejam atendidas, minimizando-se o custo da passagem de fluxo nos arcos e respeitando os limites de capacidade dos mesmos.
+
+Este trabalho prático utiliza diferentes abordagens a fim de resolver o problema descrito. A primeira abordagem consiste na resolução através do solver \textit{GLPSOL}, do pacote \textit{GLPK} (\textit{GNU Linear Programming Kit}), baseado no método \textit{SIMPLEX} para a resolução de problemas de programação linear, e pode ser vista na seção \ref{glpk}. A segunda abordagem faz uso de uma heurística que explora as características do problema e foi desenvolvida pela equipe. Detalhes adicionais e a implementação são apresentados na seção \ref{heur}. A partir da geração de instâncias e da efetivação de uma sequência de testes, os métodos são comparados na seção \ref{analise}.
+
+
+\section{CONCLUSÃO}
+
+O \textit{Single Source Fixed Charge Network Flow Problem} tem como base um grafo formado por um nó de oferta e nós de demanda ou transbordo conectados através de arcos com limites superiores de capacidade e custos fixos para a passagem de fluxo. Neste trabalho foram utilizadas duas estratégias para resolver o problema descrito acima.
+
+A primeira estratégia corresponde à utilização de um solver, o \textit{GLPSOL} do pacote \textit{GLPK}, que fornece resultados exatos para o problema. A segunda estratégia envolveu a elaboração de um heurística baseada no caminho mínimo entre cada nó demanda e o nó de oferta.
+
+A heurística desenvolvida corresponde a um método iterativo que a cada iteração calcula o caminho mínimo entre o nó de oferta e um nó aleatório de demanda com demanda associada que ainda não tenha sido completamente suprida e passar um fluxo por este caminho. Tal fluxo pode corresponder à capacidade máxima de passagem do caminho ou pode ser inferior a ela. Em ambos os casos a demanda pode ou não ser completamente atendida. Caso a demanda de um dado nó não seja suprida, deve-se calcular outros caminhos mínimos até que ela seja totalmente atendida.
+
+Como a heurística favorece a escolha de caminhos de menor custo, nem sempre seleciona o melhor caminho globalmente, uma vez que um caminho de maior custo poderia permitir uma maior passagem de fluxo e possivelmente diminuir o custo de atendimento da demanda de outros nós. Dessa forma, a heurística não é exata, mas fornece resultados próximos da solução ótima do problema, como comprovado através de experimentos.
+
+Ao final do trabalho foi possível perceber que o \textit{Single Source Fixed Charge Network Flow Problem} apresenta uma formulação simples, mas de difícil solução quando se deseja a solução ótima do problema. Porém, foi possível desenvolver uma heurística relativamente simples que possibilitou calcular soluções razoavelmente próximas da solução ótima.
+
+\nocite{*}
+\bibliographystyle{sbc}
+\bibliography{bib}
+
+\end{document}
