@@ -12,9 +12,11 @@ def get_graph_from_input(file_name):
         elements = line.strip().split()
         x_coord = float(elements[0])
         y_coord = float(elements[1])
+        capacity = float(elements[2])
+        demand = float(elements[3])
         cur_point = (x_coord, y_coord)
         assert len(cur_point) == 2
-        G.add_node(cur_point)
+        G.add_node(cur_point, demand=demand, capacity=capacity)
         for point in added_points:
             b = cur_point[1] - point[1]
             c = cur_point[0] - point[0]
