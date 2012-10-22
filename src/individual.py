@@ -26,9 +26,8 @@ def crossover(i1, i2, c=None):
 
     if i1.chromosome == i2.chromosome:  # if both individuals are the same
         return i1, i2
-    else:
-        if c is None:
-            c = randint(0, len(exchange_set1))
+    elif c is None:
+        c = randint(0, len(exchange_set1))
     child1, child2 = Individual(), Individual()
     child1.chromosome = set(list(exchange_set1)[0:c] +
                             list(exchange_set2)[c:]).union(intersection)
@@ -46,10 +45,10 @@ class Individual:
             self.chromosome = set(sample(set(G.nodes()), p))
 
     def __repr__(self):
-        return str(self.chromosome)
+        return str(self.fitness)
 
     def __str__(self):
-        return str(self.chromosome)
+        return str(self.fitness)
 
     def get_list_medians_ordered_by_distance(self, node, G):
         '''given a node and the base graph G, returns an ordered list of the
