@@ -6,6 +6,7 @@ from math import ceil
 from argparse import ArgumentParser
 from pprint import pprint
 from time import clock
+from numpy import array
 
 
 def unique_individuals(pop):
@@ -34,8 +35,8 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
 
     rank_population(pop)
     report = {
-        'worst_i': pop[-1],
-        'best_i': pop[0],
+        'worst_i': pop[-1].fitness,
+        'best_i': pop[0].fitness,
         'generation': 0,
         'better_sons': 0,
         'total_sons': 0
@@ -75,11 +76,11 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
         pop = rank_population(new_pop)
         print pop[0].fitness
 
-        if report['best_i'].fitness > pop[0].fitness:
-            report['best_i'] = pop[0]
+        if report['best_i'] > pop[0].fitness:
+            report['best_i'] = pop[0].fitness
             report['generation'] = generation
-        if report['worst_i'].fitness < pop[-1].fitness:
-            report['worst_i'] = pop[-1]
+        if report['worst_i'] < pop[-1].fitness:
+            report['worst_i'] = pop[-1].fitness
 
     t2 = clock()
     report['repeated_i'] = popsize - unique_individuals(pop)
@@ -106,5 +107,16 @@ if __name__ == '__main__':
 
     G = get_graph(args['inst'])
     p = get_number_of_medians(args['inst'])
-    best = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
-                  args['coprob'], args['tsize'], args['elitism'])
+    reports = []
+    for i in range(5):
+        report = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
+                        args['coprob'], args['tsize'], args['elitism'])
+        reports.append(report)
+
+    summary = {}
+    for k in reports[0].keys():
+        nums = array([x[k] for x in reports])
+        summary[k] = {}
+        summary[k]['mean'] = nums.mean()
+        summary[k]['std'] = nums.std()
+    pprint(summary)
