@@ -39,6 +39,7 @@ def crossover(i1, i2):
 class Individual:
     def __init__(self, p=None, G=None):
         if p is None or G is None:
+            self.fitness = float('inf')
             self.chromosome = set()
         else:
             self.chromosome = set(sample(set(G.nodes()), p))

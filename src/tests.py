@@ -1,12 +1,12 @@
 from unittest import TestCase, main as unittestMain
-from custom_io import get_graph_from_input
+from custom_io import get_graph
 from individual import Individual, crossover, mutate
 import random
 
 
 class TestIndividual(TestCase):
     p = random.randint(2, 10)
-    G = get_graph_from_input('../data/SJC1.dat')
+    G = get_graph('../data/SJC1.dat')
     i1 = Individual(p, G)
     i2 = Individual(p, G)
 

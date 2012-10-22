@@ -6,6 +6,12 @@ from math import ceil
 from argparse import ArgumentParser
 
 
+def rank_population(pop, G, nodes_ordered_by_demand):
+    scores = [(i.calculate_fitness(G, nodes_ordered_by_demand), i)
+              for i in pop]
+    scores.sort()
+    return [i for (s, i) in scores]
+
 if __name__ == '__main__':
     parser = ArgumentParser(description='''Evolutionary Algorithm for
                                            the P-Median Problem''')
@@ -28,33 +34,42 @@ if __name__ == '__main__':
                                      reverse=True)
 
     pop = []
+    # generating first population, which will be random
     for i in range(args['popsize']):
         individual = Individual(p, G)
         pop.append(individual)
 
-    for i in range(args['gener']):
-        scores = [(i.calculate_fitness(G, nodes_ordered_by_demand), i)
-                  for i in pop]
-        scores.sort()
-        ranked = [i for (s, i) in scores]
-        print scores[0][0]
-
+    rank_population(pop, G, nodes_ordered_by_demand)
+    best_individual = {'i': pop[0], 'generation': 0}
+    for generation in range(args['gener']):
+        # applying elitism if relevant
         if args['elitism']:
             topelite = int(ceil(args['elitism'] * args['popsize']))
-            new_pop = ranked[0:topelite]
-        else:
+            new_pop = pop[0:topelite]
+        else:  # if no elitism specified, simply create a new population
             new_pop = []
+
+        # while the population is not complete
         while len(new_pop) < args['popsize']:
             random_number = random()
-            subpop = sample(pop, args['tsize'])
-            if random_number < args['mutprob']:
+            subpop = sample(pop, args['tsize'])  # tournament individuals
+            if random_number < args['mutprob']:  # mutating
                 new_pop.append(mutate(subpop[0], G))
-            elif random_number < args['coprob']:
+            elif random_number < args['coprob']:  # doing crossover
                 i1, i2 = crossover(subpop[0], subpop[1])
                 new_pop.append(i1)
                 new_pop.append(i2)
-            else:
+            else:  # if no mutation or crossover, insert the best individual
                 new_pop.append(deepcopy(subpop[0]))
             if len(new_pop) > args['popsize']:
                 new_pop.pop()
-        pop = new_pop
+        pop = rank_population(new_pop, G, nodes_ordered_by_demand)
+        # print pop[0].fitness
+
+        if best_individual['i'].fitness >= pop[0].fitness:
+            best_individual['i'] = pop[0]
+            best_individual['generation'] = generation
+
+    print 'Best individual at generation', \
+          str(best_individual['generation']), '\n', \
+          'Fitness:', str(best_individual['i'].fitness)
