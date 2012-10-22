@@ -31,6 +31,15 @@ class TestIndividual(TestCase):
         self.assertEqual(i3, self.i1)
         self.assertEqual(i4, self.i1)
 
+    def testCrossoverDiffIndividuals(self):
+        (i3, i4) = crossover(self.i1, self.i2, c=3)
+        self.assertNotEqual(i3, i4)
+        union1 = self.i1.chromosome.union(self.i2.chromosome)
+        union2 = i3.chromosome.union(i4.chromosome)
+        self.assertEqual(union1, union2)
+        self.assertEqual(len(i3.chromosome), self.p)
+        self.assertEqual(len(i4.chromosome), self.p)
+
 
 if __name__ == '__main__':
     unittestMain()

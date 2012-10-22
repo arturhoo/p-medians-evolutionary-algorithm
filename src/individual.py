@@ -15,7 +15,7 @@ def mutate(i, G):
     return mutated_i
 
 
-def crossover(i1, i2):
+def crossover(i1, i2, c=None):
     '''does the crossover between two individual. important to consider
     that only the distinct alleles are going to be exchanged
 
@@ -27,7 +27,8 @@ def crossover(i1, i2):
     if i1.chromosome == i2.chromosome:  # if both individuals are the same
         return i1, i2
     else:
-        c = randint(0, len(exchange_set1))
+        if c is None:
+            c = randint(0, len(exchange_set1))
     child1, child2 = Individual(), Individual()
     child1.chromosome = set(list(exchange_set1)[0:c] +
                             list(exchange_set2)[c:]).union(intersection)

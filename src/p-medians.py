@@ -64,7 +64,6 @@ if __name__ == '__main__':
             if len(new_pop) > args['popsize']:
                 new_pop.pop()
         pop = rank_population(new_pop, G, nodes_ordered_by_demand)
-        # print pop[0].fitness
 
         if best_individual['i'].fitness >= pop[0].fitness:
             best_individual['i'] = pop[0]
