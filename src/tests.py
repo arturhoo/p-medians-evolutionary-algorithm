@@ -1,24 +1,21 @@
 from unittest import TestCase, main as unittestMain
 from custom_io import get_graph_from_input
-from individual import Individual, crossover
+from individual import Individual, crossover, mutate
 import random
-from copy import deepcopy
 
 
 class TestIndividual(TestCase):
-    p = random.randint(1, 10)
+    p = random.randint(2, 10)
     G = get_graph_from_input('../data/SJC1.dat')
-    i1 = Individual()
-    i2 = Individual()
-    i1.be_random(p, G)
-    i2.be_random(p, G)
+    i1 = Individual(p, G)
+    i2 = Individual(p, G)
 
     def testMutation(self):
-        i3 = deepcopy(self.i1)
-        i3.mutate(self.G)
+        i3 = mutate(self.i1, self.G)
         intersection = self.i1.chromosome.intersection(i3.chromosome)
         self.assertEqual(len(i3.chromosome), self.p)
         self.assertEqual(len(intersection), self.p - 1)
+        self.assertNotEqual(self.i1, i3)
 
     def testCrossover(self):
         (i3, i4) = crossover(self.i1, self.i2)
