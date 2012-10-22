@@ -25,7 +25,7 @@ def crossover(i1, i2, c=None):
     exchange_set2 = i2.chromosome - intersection
 
     if i1.chromosome == i2.chromosome:  # if both individuals are the same
-        return i1, i2
+        return i1, None
     elif c is None:
         c = randint(0, len(exchange_set1))
     child1, child2 = Individual(), Individual()

@@ -27,9 +27,8 @@ class TestIndividual(TestCase):
 
     def testCrossoverSameIndividuals(self):
         (i3, i4) = crossover(self.i1, self.i1)
-        self.assertEqual(i3, i4)
         self.assertEqual(i3, self.i1)
-        self.assertEqual(i4, self.i1)
+        self.assertEqual(i4, None)
 
     def testCrossoverDiffIndividuals(self):
         (i3, i4) = crossover(self.i1, self.i2, c=3)

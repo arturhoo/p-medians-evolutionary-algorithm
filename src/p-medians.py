@@ -2,11 +2,11 @@ from individual import Individual, mutate, crossover
 from custom_io import get_graph, get_number_of_medians
 from random import sample, random
 from copy import deepcopy
-from math import ceil
+from math import ceil, sqrt
 from argparse import ArgumentParser
 from pprint import pprint
 from time import clock
-from numpy import array
+# from numpy import array
 
 
 def unique_individuals(pop):
@@ -60,21 +60,22 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
                 mean_fitness = (subpop[0].fitness + subpop[1].fitness) / 2.0
                 i1, i2 = crossover(subpop[0], subpop[1])
                 i1.calculate_fitness(G, nodes_ordered_by_demand)
-                i2.calculate_fitness(G, nodes_ordered_by_demand)
                 if i1.fitness > mean_fitness:
                     report['better_sons'] += 1
-                if i2.fitness > mean_fitness:
-                    report['better_sons'] += 1
-                report['total_sons'] += 2
+                report['total_sons'] += 1
                 new_pop.append(i1)
-                new_pop.append(i2)
+                if i2 is not None:
+                    i2.calculate_fitness(G, nodes_ordered_by_demand)
+                    if i2.fitness > mean_fitness:
+                        report['better_sons'] += 1
+                    new_pop.append(i2)
+                    report['total_sons'] += 1
             else:  # if no mutation or crossover, insert the best individual
                 new_pop.append(deepcopy(subpop[0]))
             if len(new_pop) > popsize:
                 new_pop.pop()
                 report['total_sons'] -= 1
         pop = rank_population(new_pop)
-        print pop[0].fitness
 
         if report['best_i'] > pop[0].fitness:
             report['best_i'] = pop[0].fitness
@@ -108,15 +109,50 @@ if __name__ == '__main__':
     G = get_graph(args['inst'])
     p = get_number_of_medians(args['inst'])
     reports = []
-    for i in range(5):
+    for i in range(10):
         report = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
                         args['coprob'], args['tsize'], args['elitism'])
         reports.append(report)
 
     summary = {}
     for k in reports[0].keys():
-        nums = array([x[k] for x in reports])
+        nums = [x[k] for x in reports]
         summary[k] = {}
-        summary[k]['mean'] = nums.mean()
-        summary[k]['std'] = nums.std()
+        summary[k]['mean'] = sum(nums) / len(nums)
+        nums2 = [pow(x - summary[k]['mean'], 2) for x in nums]
+        summary[k]['std'] = sqrt(sum(nums2) / len(nums2))
     pprint(summary)
+
+    import sys
+    sys.stdout.write(str(round(summary['best_i']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['best_i']['std'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['generation']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['generation']['std'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['worst_i']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['worst_i']['std'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['mean_fitness']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['mean_fitness']['std'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['repeated_i']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['repeated_i']['std'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['time']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['time']['std'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['better_sons']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['better_sons']['std'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['total_sons']['mean'], 3)))
+    sys.stdout.write(';')
+    sys.stdout.write(str(round(summary['total_sons']['std'], 3)))
+    sys.stdout.write(';')
