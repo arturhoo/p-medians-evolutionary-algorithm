@@ -1,10 +1,13 @@
 \documentclass[12pt]{article}
 \usepackage{sbc-template}
 \usepackage{graphicx}
+\usepackage{graphics}
 \usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{rotating}
 \usepackage{subfigure}
 \usepackage{times,amsmath,epsfig}
-\usepackage{graphicx,url}
+\usepackage{url}
 \usepackage{multirow}
  \makeatletter
  \newif\if@restonecol
@@ -70,15 +73,15 @@ Nesse trabalho o problema da $p$-Mediana capacitado é resolvido através de algor
 
 O algoritmo genético (GA) é uma classe de heurísticas adaptativas baseado no conceito de avaliação do ``melhor adaptado''. O algoritmo genético desenvolvido nesse trabalho é detalhado a seguir
 
-\subsection{Representação do indivíduo}
+\subsection{Representação do Indivíduo}
 
 Cada individuo (cromossomo) possui exatamente $p$ genes, onde $p$ é o número de medianas, e cada alelo de cada gene representa as coordenadas de uma facilidade e, por consequência, identifica unicamente uma localidade. No GA em questão, o genoma é interpretado como um conjunto de facilidades, no sentido matemático de conjunto, onde não existem elementos duplicados e não há ordem entre esses elementos.
 
-\subsection{Avaliação da Fitness}
+\subsection{Avaliação da \textit{Fitness}}
 
 Dado que as medianas são selecionadas, cada facilidade é assinalada a uma mediana (como será apresentado adiante) e assim que todos os vértices são estabelecidos, a fitness do indivíduo pode ser computada através da soma das distancias Euclidianas entre cada vértice e sua mediana. A soma mínima é a solução.
 
-\subsection{Assinalamento de facilidades}
+\subsection{Assinalamento de Facilidades}
 
 O assinalamento de facilidades a medianas candidatas, processo necessário ao cálculo da fitness é feito através da alocação das facilidades com maiores demandas primeiro à mediana mais próxima, em termos de distância Euclidiana que tenha capacidade de atender a demanda. Dessa maneira, como cada mediana tem uma capacidade fixa, algumas facilidades terão de ser assinaladas à segunda (ou terceira, quarta...) mediana mais próxima.
 
@@ -126,7 +129,7 @@ O processo de preenchimento da nova população ocorre a partir do processo de sel
 
 Durante o processo evolucionário, pode ser introduzido um fator de elitismo. Caso ele esteja presente, uma fração, definida por esse fator, dos melhores indivíduos da população atual é introduzida diretamente na nova população, sem alterações em seu material genético.
 
-\subsection{Abstrações suplementares}
+\subsection{Abstrações adicionais}
 
 Tendo sido apresentado o modelo, o algoritmo evolucionário foi implementado utilizando-se a linguagem \textit{Python}, com o auxílio da biblioteca \textit{NetworkX}\footnote{http://networkx.lanl.gov/} que provê estruturas de dados e funções para o manuseio de Grafos. A estrutura de grafo completo é utilizada para a representação das instâncias, onde as coordenadas de uma facilidades identificam-na como um nó, e a distância entre elas é representada como o peso das arestas do grafo completo.
 
@@ -150,15 +153,15 @@ A primeira série de experimentos utilizou a base \textit{SJC1.dat} disponibiliza
     \item $elitism$: fração de elitismo;
 \end{itemize}
 
-O processo de avaliação de parâmetro seguiu a seguinte metodologia:
+O processo de avaliação de parâmetros seguiu a seguinte metodologia:
 
 \begin{enumerate}
     \item Definição de parâmetros iniciais: $popsize=100$, $gener=100$, $mutprob=0.001$, $coprob=0.6$, $tsize=2$, $elitism=0.01$ .
     \item Avaliação do incremento de $popsize$ e $gener$. Definição de valores bases para esses parâmetros.
     \item Avaliação da sensibilidade da solução, com base em variações nos valores de probabilidade $mutprob$ e $coprob$. Definição de melhores valores para esses parâmetros.
     \item Aumento do tamanho do torneio $tsize$. Avaliação do impacto na qualidade da solução.
-    \item Retirada do fator de elitismo $elitism$. Impacto positivo?
-    \item Incremento do fator de elitismo $elitism$. Efeito positivo?
+    \item Retirada do fator de elitismo $elitism$. Avaliação do impacto na qualidade da solução.
+    \item Incremento do fator de elitismo $elitism$. Avaliação do impacto na qualidade da solução.
     \item Combinação dos melhores parâmetros com vistas nas outras medidas aferidas, como geração onde a melhor solução foi encontrada e número de indivíduos repetidos.
 \end{enumerate}
 
@@ -166,6 +169,73 @@ Tendo sido idenficados os melhores parâmetros para a instância base, estes foram
 
 \subsection{Resultados}
 
+A sequência de avaliação dos parâmetros descrita na seção anterior feita na base \textit{SJC1.dat} pode ser vista na tabela \ref{tabela1}. A primeira alteração realizada sob os parâmetros iniciais, um aumento para 500 gerações, sinalizou para uma melhora na qualidade da solução, o erro caiu de 18.3\% para 16.0\%, todavia, a solução foi encontrada, em média, na geração 235, indicando que o alto numéro de gerações não contribuiu plenamente para a qualidade da solução. Como consequência do prematuro encontro da melhor solução, a configuração apresentou uma das menores \textit{fitness} médias. Outro detalhe interessante dessa configuração é a baixa porcentagem de filhos melhores que os pais na operação de \textit{crossover}.
+
+Em seguida, tendo sido retornado o valor do número de gerações para o valor inicial, foi elevado o tamanho da população para 500, o que resultou numa melhora significativa, diminuindo o erro da solução encontrada para 11.8\%. Realizando novamente o aumento do número de gerações para 500, o erro reduziu ainda mais, chegando ao índice de 9.2\%, entretando, ficou evidenciado o grande número de indíviduos repetidos na solução final, e novamente o ``desperdício'' de gerações (a melhor solução foi encontrada, em média, na geração 257). Conclui-se que bons valores para os parâmetro tamanho da população e número de gerações são 200 e 250, respectivamente.
+
+A avaliação continuou, dessa vez avaliando o aumento da probabilidade de \textit{crossover} para 0.6 para 0.8, o que não representou nenhuma melhora significativa, o que levou a manutenção do valor desse parâmetro em 0.6. Em seguida, foi alterado o valor da probabilidade de mutação, o que causa uma diminuição na pressão seletiva. A primeira alteração de 0.001 para 0.01 não trouxe melhoras visíveis a não ser o encontro da solução em uma geração mais avançada, mas alteração seguinte, para 0.1, implicou diretamente na melhora da solução, fazendo com que o erro caísse de 11.7\% para 9.8\%. Esse valor foi considerado ideal, ao ser evidenciado que um aumento para 0.3 nesse parâmetro implicou num retorno ao valor do erro anterior: 11.4\%, não obstante o número de indivíduos repetidos tenha caído de 27, em média, para 19.
+
+Adiante, avaliou-se o impacto do tamanho do torneio. O valor inicial de 2 foi elevado para 5, o que ocasionou numa solução pior: o erro subiu de 9.8\% para 11.2\%. Assim, o valor de 2 para esse parâmetro foi mantido no restante da avaliação.
+
+A retirada do elitismo ocasionou uma piora signficante no melhor valor da \textit{fitness}, quando o erro subiu de 9.8\% para 20.3\%. Além disso, essa melhor solução foi encontrada demasiadamente cedo, em média, na geração 68. Em contrapartida, um aumento no valor, passando de 0.01 para 0.1, resultou na melhor configuração encontrada para a avaliação experimentou: um erro médio de 5.65\%, sendo, além disso, o terceiro conjunto de parâmetros mais rápido entre os testados, definitivamente uma ótima configuração, que foi inclusive usada nas instâncias restantes. A título de experimentação, ainda foi experimentado uma última configuração que diminui a pressão seletiva ao definir a probabilidade de mutação em 0.3 e o fator de elitismo em 0.25; essa configuração se mostrou também muito boa, com um erro médio de 5.9\%, a terceira melhor \textit{fitness} média e a segunda execução mais rápida.
+
+Dessa maneira, chegou-se a melhor configuração, que foi utilizada nas demais instâncias:
+
+\begin{itemize}
+    \item tamanho da população: 200
+    \item número de gerações: 250
+    \item probabilidade de mutação: 0.1
+    \item probabilidade de \textit{crossover}: 0.1
+    \item tamanho do torneio: 2
+    \item fração de elitismo: 0.1
+\end{itemize}
+
+Finalmente, essa configuração se mostrou também boa nas demais instâncias, \textit{SJC2.dat, SJC3b.dat} e \textit{SJC4a.dat}, obtendo erros de 4.12\%, 6.04\% e 9.96\% respectivamente. Possiíveis fontes de melhorias estão no aumento do tamanho da população e do número de gerações proporcionalmente ao número de arestas dos grafos dessas instâncias. Detalhes adicionais para essas instâncias podem ser encontrados na tabela \ref{tabela2}.
+
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{sidewaystable}[htbp]
+  \centering
+  \caption{Avaliação de parâmetros para a instância \textit{SJC1.dat}}
+    \resizebox{\columnwidth}{!}{%
+    \begin{tabular}{lc|c|c|c|c|c|c|c|c|c|c|c|c|c}
+    \toprule[0.18em]
+    \multirow{2}{*}{Operação} & \multicolumn{2}{c}{Melhor Fitness} & \multicolumn{1}{c}{Erro} & \multicolumn{2}{c}{na Geração} & \multicolumn{2}{c}{Pior Fitness} & \multicolumn{2}{c}{Fitness Média} & \multicolumn{2}{c}{Indiv. Rep.} & \multicolumn{2}{c}{Tempo de Exec.(s)} & \multicolumn{1}{c}{Filhos Melhores(\%)} \\
+    \cmidrule{2-15}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} \\
+    \midrule
+    0) população inicial & 20402.10 & 665.91 & 18.30\% & 70.0    & 22.00 & 83982.73 & 3031.61 & 34273.16 & 7344.27 & 29.2  & 6.97  & 17.05 & 0.13  & 49.34\% \\
+    1) gener=500 & 20010.37 & 403.13 & 16.03\% & 234.9 & 152.99 & 85913.78 & 4588.55 & 20326.80 & 480.76 & 97.9  & 1.14  & 85.04 & 2.02  & 30.53\% \\
+    2) gener=100, popsize=500 & 19284.07 & 511.12 & 11.81\% & 83.0    & 10.86 & 93121.14 & 3363.94 & 34607.48 & 2206.09 & 66.0  & 11.18 & 38.49 & 1.08  & 49.31\% \\
+    3) gener=500, popsize=500 & 18842.85 & 306.43 & 9.26\% & 257.0   & 129.07 & 93292.44 & 2990.64 & 20236.16 & 912.97 & 491.0 & 6.63  & 182.30 & 4.98  & 40.28\% \\
+    4) gener=250, popsize=250 & 19329.45 & 392.82 & 12.08\% & 142 & 37.14 & 88663.55 & 5077.01 & 27534.42 & 2696.14 & 149.0 & 24.15 & 37.43 & 1.15 & 49.11\% \\
+    5) gener=200, popsize=250, cprob=0.8 & 19310.84 & 467.83 & 11.97\% & 134.0   & 50.77 & 89492.99 & 3135.85 & 27399.69 & 3350.50 & 147.0 & 18.33 & 43.93 & 1.08  & 48.95\% \\
+    6) cprob=0.6, mutprob=0.01 & 19274.54 & 319.64 & 11.76\% & 201.0   & 31.40 & 88850.68 & 3219.30 & 28512.04 & 3587.08 & 121.0 & 16.16 & 39.27 & 1.17  & 49.27\% \\
+    7) mutprob=0.1 & 18944.68 & 377.56 & 9.85\% & 204.0   & 42.56 & 92126.15 & 3257.53 & 35351.81 & 2392.47 & 27.0  & 7.21  & 39.73 & 1.79  & 49.29\% \\
+    8) mutprob=0.3 & 19219.22 & 354.24 & 11.44\% & 193.0   & 46.66 & 94694.45 & 1977.13 & 38304.52 & 1926.10 & 19.0  & 3.87  & 40.02 & 1.95  & 49.51\% \\
+    9) mutprob=0.1, tsize=5 & 19180.68 & 354.23 & 11.21\% & 204.0   & 26.59 & 92282.33 & 4585.54 & 34561.99 & 1397.58 & 29.0  & 5.48  & 37.78 & 2.10  & 49.29\% \\
+    10) tsize=2, elitism=0 & 20751.42 & 522.79 & 20.32\% & 68.0   & 57.67 & 93790.43 & 3412.25 & 38953.09 & 4866.43 & 23.0  & 8.72  & 40.08 & 1.30  & 49.04\% \\
+    11) elitism=0.1 & 18221.37 & 183.96 & 5.65\% & 200.0   & 44.69 & 87181.98 & 4258.95 & 24458.78 & 1656.04 & 118.0 & 6.56  & 33.06 & 1.16  & 48.76\% \\
+    12) elitism=0.25, mutprob=0.3 & 18276.63 & 352.72 & 5.97\% & 175.0   & 30.50 & 85356.41 & 4601.98 & 23430.54 & 1195.40 & 117.0 & 8.12  & 27.23 & 1.39  & 47.89\% \\
+    \bottomrule
+    \end{tabular}%
+    }
+  \label{tabela1}%
+  \caption{Melhor configuração de parâmetros aplicada às demais instâncias}
+    \resizebox{\columnwidth}{!}{%
+    \begin{tabular}{lc|c|c|c|c|c|c|c|c|c|c|c|c|c}
+    \toprule
+    \multirow{2}{*}{Instância} & \multicolumn{2}{c}{Melhor Fitness} & \multicolumn{1}{c}{Erro} & \multicolumn{2}{c}{na Geração} & \multicolumn{2}{c}{Pior Fitness} & \multicolumn{2}{c}{Fitness Média} & \multicolumn{2}{c}{Indiv. Rep.} & \multicolumn{2}{c}{Tempo de Exec.(s)} & \multicolumn{1}{c}{Filhos Melhores(\%)} \\
+    \cmidrule{2-15}
+    \multicolumn{1}{c}{}& \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} \\
+    \midrule
+    \textit{SJC2.dat} & 34595.741 & 288.97 & 4.12\% & 220.0 & 22.83 & 173646.60 & 4626.67 & 39646.87 & 858.49 & 111   & 8.72  & 105.34 & 4.95  & 48.77\% \\
+    \textit{SJC3b.dat} & 43088.299 & 593.01 & 6.04\% & 236.0 & 17.35 & 139948.18 & 16204.68 & 45019.74 & 801.56 & 105   & 12.33 & 333.82 & 7.25  & 49.72\% \\
+    \textit{SJC4a.dat} & 68001.947 & 1107.33 & 9.96\% & 210.0 & 16.69 & 275545.13 & 21618.21 & 72824.61 & 903.47 & 99    & 13.76 & 482.35 & 6.32  & 48.70\% \\
+    \bottomrule
+    \end{tabular}%
+    }
+  \label{tabela2}%
+\end{sidewaystable}%
 
 
 \section{CONCLUSÃO}
