@@ -42,7 +42,7 @@ title=\lstname,                 % show the filename of files included with \lsti
 
 \sloppy
 
-\title{TRABALHO PRÁTICO 1: \\Um Algoritmo Genético para resolver o problema da p-Mediana com restrições de capacidade}
+\title{TRABALHO PRÁTICO 1: \\Um Algoritmo Genético para resolver o problema da $p$-Mediana com restrições de capacidade}
 
 \author{Artur Rodrigues}
 
@@ -56,24 +56,129 @@ title=\lstname,                 % show the filename of files included with \lsti
 
 \section{INTRODUÇÃO}
 
-O \textit{Single Source Fixed Charge Network Flow Problem} é representado por meio de um grafo contendo apenas um nó de oferta e os demais nós de demanda ou transbordo. Esses nós são conectados através de arcos com capacidades limitadas superiormente e custos fixos não negativos, contabilizados sempre que existir um fluxo em uma aresta, independentemente da intensidade.
+Problemas de localização de facilidades tem diversas aplicações em telecomunicações, transportes, orquestração de tarefas e distribuição. Uma importante maneira de medir a eficácia de uma localidade de uma facilidade é avaliando o decaimento da média (total) das distancias em função do aumento da acessibilidade e eficiência da facilidade. O problema da $p$-Mediana é um dos problemas mais conhecidos no âmbito de localização de facilidades e aplica essa avaliação ao tentar minimizar a distancia (total) entre as demandas e um numero $p$ de localidades selecionados, chamadas de medianas. O custo total da solução é a soma das distancias entre os pontos de demanda e as medianas.
 
-Seja um grafo direcionado \textit{G = (N,~A)} com vetor de demandas $b$, de custos $c$ e de limites superiores nos arcos $u$, todos com valores inteiros, desejamos selecionar um conjunto de arcos $A' \subseteq A$ e atribuir fluxos positivos a esses, de modo que as demandas sejam atendidas, minimizando-se o custo da passagem de fluxo nos arcos e respeitando os limites de capacidade dos mesmos.
+No problema da $p$-Mediana não capacitado, é considerado que cada facilidade candidata a se tornar mediana pode satisfazer um número ilimitado de pontos de demanda. Em contraste, no problema da $p$-Mediana capacitado, cada facilidade candidata a mediana tem uma capacidade fixa, i.e. um número máximo de unidades de demanda que ela pode satisfazer. Esse problema é NP-Difícil e, portanto, mesmo heurísticas especializadas em resolver esse problema demandam um esforço computacional considerável.
 
-Este trabalho prático utiliza diferentes abordagens a fim de resolver o problema descrito. A primeira abordagem consiste na resolução através do solver \textit{GLPSOL}, do pacote \textit{GLPK} (\textit{GNU Linear Programming Kit}), baseado no método \textit{SIMPLEX} para a resolução de problemas de programação linear, e pode ser vista na seção \ref{glpk}. A segunda abordagem faz uso de uma heurística que explora as características do problema e foi desenvolvida pela equipe. Detalhes adicionais e a implementação são apresentados na seção \ref{heur}. A partir da geração de instâncias e da efetivação de uma sequência de testes, os métodos são comparados na seção \ref{analise}.
+Nesse trabalho o problema da $p$-Mediana capacitado é resolvido através de algoritmos genéticos. Adicionalmente, é empregada uma técnica para o assinalamento de pontos de demanda às $p$ medianas candidatas. Para avaliar a qualidade dessa heurística, o método é avaliado em comparação a solução ótima para algumas instancias selecionadas. Finalmente, é feita uma avaliação do impacto de diversos parâmetros nos resultados obtidos.
+
+
+% \section{O PROBLEMA DA $p$-MEDIANA CAPACITADO}
+
+
+\section{MODELAGEM DO ALGORITMO GENÉTICO}
+
+O algoritmo genético (GA) é uma classe de heurísticas adaptativas baseado no conceito de avaliação do ``melhor adaptado''. O algoritmo genético desenvolvido nesse trabalho é detalhado a seguir
+
+\subsection{Representação do indivíduo}
+
+Cada individuo (cromossomo) possui exatamente $p$ genes, onde $p$ é o número de medianas, e cada alelo de cada gene representa as coordenadas de uma facilidade e, por consequência, identifica unicamente uma localidade. No GA em questão, o genoma é interpretado como um conjunto de facilidades, no sentido matemático de conjunto, onde não existem elementos duplicados e não há ordem entre esses elementos.
+
+\subsection{Avaliação da Fitness}
+
+Dado que as medianas são selecionadas, cada facilidade é assinalada a uma mediana (como será apresentado adiante) e assim que todos os vértices são estabelecidos, a fitness do indivíduo pode ser computada através da soma das distancias Euclidianas entre cada vértice e sua mediana. A soma mínima é a solução.
+
+\subsection{Assinalamento de facilidades}
+
+O assinalamento de facilidades a medianas candidatas, processo necessário ao cálculo da fitness é feito através da alocação das facilidades com maiores demandas primeiro à mediana mais próxima, em termos de distância Euclidiana que tenha capacidade de atender a demanda. Dessa maneira, como cada mediana tem uma capacidade fixa, algumas facilidades terão de ser assinaladas à segunda (ou terceira, quarta...) mediana mais próxima.
+
+\subsection{Seleção}
+
+Algoritmos genéticos consistem de três operadores primários: 1) reprodução, 2) \textit{crossover} e 3) mutação.
+
+Reprodução é o processo no qual características das soluções são passadas de uma geração para a outra. A solução escolhida para reprodução é feita através de uma técnica aleatória e ao mesmo tempo enviesada conhecida como torneio. Nela são escolhidos $k$ elementos aleatórios da população, onde esses elementos irão competir no processo de reprodução.
+
+\subsection{\textit{Crossover}}
+
+O \textit{crossover} usado nesse trabalho inicialmente computa dois vetores denominados vetores de câmbio, um para cada pai, como segue. O vetor de câmbio do pai 1 representa o complemento da interseção entre os cromossomos de ambos os pais em relação ao próprio cromossomo do pai 1, o mesmo é válido para o pai 2. Os conteúdos desses vetores serão cruzados de maneira aleatória e os dois vetores resultantes serão unidos à interseção dos cromossomos dos pais, produzindo dois novos cromossomos de tamanho $p$, denominados filhos.
+
+Se ambos os pais são identicos, somente um deles é passado para a nova geração no processo de reprodução.
+
+\subsection{Mutação}
+
+A mutação ocorre como se segue. O gene a ser mutado tem um de seus alelos, escolhido aleatoriamente, substituído por outro alelo aleatório (uma facilidade). Isso ocorre com a restrição de que a nova facilidade não está presente no genótipo atual do indivíduo.
+
+\subsection{Preenchimento populacional}
+
+O processo de preenchimento da nova população ocorre a partir do processo de seleção dos indivíduos do torneio e da geração de um número aleatório $r$ que determinará quais operações de reprodução serão aplicadas, com base nas probabilidades dessas operações (mutação e \textit{crossover}). Esse procedimento se repete até que a nova população possua o número de indivíduos desejado, como se segue:
+
+\begin{algorithm}[H]
+\begin{footnotesize}
+    nova população $\leftarrow$ []\;
+    \While{$|$nova população$|$ $<$ tamanho da população}{
+        r $\leftarrow$ $random(0, 1)$\;
+        indivíduos do torneio $\leftarrow sample$(população, tamanho do torneio)\;
+        \If{r $<$ probabilidade de mutação}{
+            $mutate$(melhor indivíduo do torneio)\;
+            insere a mutação na nova população\;
+        }\ElseIf{r $<$ probabilidade de crossover}{
+            $crossover$(dois melhores indivíduos do torneio)
+            insere filhos na nova população\;
+        }{
+            insere melhor indivíduo do torneio na nova população\;
+        }
+    }
+\caption{Preenchimento populacional}
+\end{footnotesize}
+\end{algorithm}
+
+\subsection{Elitismo}
+
+Durante o processo evolucionário, pode ser introduzido um fator de elitismo. Caso ele esteja presente, uma fração, definida por esse fator, dos melhores indivíduos da população atual é introduzida diretamente na nova população, sem alterações em seu material genético.
+
+\subsection{Abstrações suplementares}
+
+Tendo sido apresentado o modelo, o algoritmo evolucionário foi implementado utilizando-se a linguagem \textit{Python}, com o auxílio da biblioteca \textit{NetworkX}\footnote{http://networkx.lanl.gov/} que provê estruturas de dados e funções para o manuseio de Grafos. A estrutura de grafo completo é utilizada para a representação das instâncias, onde as coordenadas de uma facilidades identificam-na como um nó, e a distância entre elas é representada como o peso das arestas do grafo completo.
+
+
+\section{AVALIAÇÃO EXPERIMENTAL E RESULTADOS}
+
+\subsection{Procedimentos}
+
+Com o intuito de se obter testes mais consistentes, os experimentos foram executados em ambiente virtualizado, com capacidade de processamento e memória primário reduzidas, 30\% da capacidade da máquina hospedeira e 512MiB, respectivamente. O sistema operacional do ambiente virtualizado era Ubuntu Server 12.04 64 bits e os softwares utilizados foram interpretador Python (2.7.2) PyPy versão 1.9.0, e GCC versão 4.2.1. A máquina hospedeira possuía sistema operacional Mac OS X 10.8.2, processador \textit{quad-core} de 2.3GHz e memória primária com capacidade de 8GiB.
+
+Para cada experimento realizado foram aferidos os valores médios para as \textit{fitness} do melhor e pior indivíduo, geração onde foi encontrada a melhor solução, \textit{fitness} média e o número de indivíduos repetidos na população final, tempo de execução e porcentagem de filhos melhores que os pais no processo de \textit{crossover}. É importante ressaltar que, devido à natureza estocástica da solução, cada problema foi executado 30 vezes e os valores médios, acompanhados do desvio padrão para cada medida foram considerados.
+
+A primeira série de experimentos utilizou a base \textit{SJC1.dat} disponibilizada, e através dessa série foram identificados os melhores valores para os seguintes parâmetros:
+
+\begin{itemize}
+    \item $popsize$: tamanho da população;
+    \item $gener$: número de gerações;
+    \item $mutprob$: probabilidade de mutação;
+    \item $coprob$: probabilidade de \textit{crossover};
+    \item $tsize$: tamanho do torneio;
+    \item $elitism$: fração de elitismo;
+\end{itemize}
+
+O processo de avaliação de parâmetro seguiu a seguinte metodologia:
+
+\begin{enumerate}
+    \item Definição de parâmetros iniciais: $popsize=100$, $gener=100$, $mutprob=0.001$, $coprob=0.6$, $tsize=2$, $elitism=0.01$ .
+    \item Avaliação do incremento de $popsize$ e $gener$. Definição de valores bases para esses parâmetros.
+    \item Avaliação da sensibilidade da solução, com base em variações nos valores de probabilidade $mutprob$ e $coprob$. Definição de melhores valores para esses parâmetros.
+    \item Aumento do tamanho do torneio $tsize$. Avaliação do impacto na qualidade da solução.
+    \item Retirada do fator de elitismo $elitism$. Impacto positivo?
+    \item Incremento do fator de elitismo $elitism$. Efeito positivo?
+    \item Combinação dos melhores parâmetros com vistas nas outras medidas aferidas, como geração onde a melhor solução foi encontrada e número de indivíduos repetidos.
+\end{enumerate}
+
+Tendo sido idenficados os melhores parâmetros para a instância base, estes foram aplicados às outras instâncias disponibilizadas: \textit{SJC2.dat, SJC3b.dat} e \textit{SJC4a.dat}. Os resultados podem ser encontrados na próxima seção.
+
+\subsection{Resultados}
+
 
 
 \section{CONCLUSÃO}
 
-O \textit{Single Source Fixed Charge Network Flow Problem} tem como base um grafo formado por um nó de oferta e nós de demanda ou transbordo conectados através de arcos com limites superiores de capacidade e custos fixos para a passagem de fluxo. Neste trabalho foram utilizadas duas estratégias para resolver o problema descrito acima.
+O problema da $p$-Mediana é uma importante variação do problema de localização de facilidades onde $p$ medianas são economicamente selecionadas para servir um conjunto de facilidades demandantes de maneira que as capacidades das medianas seja respeitada. Nesse trabalho foi apresentada uma abordagem genética para a solução desse problema e o comportamento e eficiência dessa abordagem foram avaliados sob diferentes perspectivas.
 
-A primeira estratégia corresponde à utilização de um solver, o \textit{GLPSOL} do pacote \textit{GLPK}, que fornece resultados exatos para o problema. A segunda estratégia envolveu a elaboração de um heurística baseada no caminho mínimo entre cada nó demanda e o nó de oferta.
+Tendo em vista a adoção de uma outra heurística para o assinalamento de facilidades a medianas, o grande aprendizado desse trabalho vem, em primeira instância, da oportunidade de por em prática os conceitos que movem técnicas evolucionarias e, posteriormente, avaliar o impacto dos parâmetros na qualidade da solução. Ficou claro, por exemplo, que a pressão seletiva desempenha papel fundamental no resultado das soluções encontradas, sendo, portanto, essencial a inserção de fatores que contrabalancem esse efeito (aumento da probabilidade de mutação), e que é benéfica a presença de um fator de elitismo no processo evolucionário.
 
-A heurística desenvolvida corresponde a um método iterativo que a cada iteração calcula o caminho mínimo entre o nó de oferta e um nó aleatório de demanda com demanda associada que ainda não tenha sido completamente suprida e passar um fluxo por este caminho. Tal fluxo pode corresponder à capacidade máxima de passagem do caminho ou pode ser inferior a ela. Em ambos os casos a demanda pode ou não ser completamente atendida. Caso a demanda de um dado nó não seja suprida, deve-se calcular outros caminhos mínimos até que ela seja totalmente atendida.
+No caso do trabalho em questão, isso ficou mais evidente, ao ser observado que uma heurística orientada pela busca aleatória no espaço de soluções (através de mutações mais frequentes) produziu melhores soluções que a busca puramente evolucionária através de cruzamento.
 
-Como a heurística favorece a escolha de caminhos de menor custo, nem sempre seleciona o melhor caminho globalmente, uma vez que um caminho de maior custo poderia permitir uma maior passagem de fluxo e possivelmente diminuir o custo de atendimento da demanda de outros nós. Dessa forma, a heurística não é exata, mas fornece resultados próximos da solução ótima do problema, como comprovado através de experimentos.
+Finalmente, fica sinalizado para trabalhos futuros, a avaliação da utilização de outros conceitos como \textit{niching} e otimização multi-objetiva. As restrições de desempenho do algoritmo também sugerem a avaliação de uma abordagem evolucionária paralela para a solução desse problema.
 
-Ao final do trabalho foi possível perceber que o \textit{Single Source Fixed Charge Network Flow Problem} apresenta uma formulação simples, mas de difícil solução quando se deseja a solução ótima do problema. Porém, foi possível desenvolver uma heurística relativamente simples que possibilitou calcular soluções razoavelmente próximas da solução ótima.
+
 
 \nocite{*}
 \bibliographystyle{sbc}
