@@ -1,5 +1,10 @@
 # p-Medians Evolutionary Algorithm
 
+##
+
+The documentation (in Portuguese) is located in the directory `doc`, and the
+reference file is `doc/tp1.pdf`.
+
 ## Instances
 
 The instances are located in the `data` dir and were obtained from this
