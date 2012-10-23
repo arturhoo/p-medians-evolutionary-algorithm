@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 from individual import Individual, mutate, crossover
 from custom_io import get_graph, get_number_of_medians
 from random import sample, random
 from copy import deepcopy
-from math import ceil, sqrt
+from math import ceil
 from argparse import ArgumentParser
 from pprint import pprint
 from time import clock
+from cPickle import dump
 # from numpy import array
 
 
@@ -33,13 +35,14 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
         individual.calculate_fitness(G, nodes_ordered_by_demand)
         pop.append(individual)
 
-    rank_population(pop)
+    pop = rank_population(pop)
     report = {
         'worst_i': pop[-1].fitness,
         'best_i': pop[0].fitness,
         'generation': 0,
         'better_sons': 0,
-        'total_sons': 0
+        'total_sons': 0,
+        'best_i_hist': [pop[0].fitness]
     }
     for generation in range(gener):
         # applying elitism if relevant
@@ -76,7 +79,7 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
                 new_pop.pop()
                 report['total_sons'] -= 1
         pop = rank_population(new_pop)
-
+        report['best_i_hist'].append(pop[0].fitness)
         if report['best_i'] > pop[0].fitness:
             report['best_i'] = pop[0].fitness
             report['generation'] = generation
@@ -87,7 +90,7 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
     report['repeated_i'] = popsize - unique_individuals(pop)
     report['mean_fitness'] = sum([i.fitness for i in pop]) / popsize
     report['time'] = round(t2 - t1, 3)
-    pprint(report)
+    print report
     return report
 
 
@@ -108,5 +111,18 @@ if __name__ == '__main__':
 
     G = get_graph(args['inst'])
     p = get_number_of_medians(args['inst'])
-    report = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
-                    args['coprob'], args['tsize'], args['elitism'])
+    reports = []
+    for i in range(5):
+        report = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
+                        args['coprob'], args['tsize'], args['elitism'])
+        reports.append(report)
+
+    histories = [x['best_i_hist'] for x in reports]
+    mean_history = [sum(value) / len(histories) for value in zip(*histories)]
+    mean_history = [round(x / 1000, 2) for x in mean_history]
+    file_name = str(args['popsize']) + '-' + str(args['gener']) + '-' + \
+                str(args['mutprob']) + '-' + str(args['coprob']) + '-' + \
+                str(args['tsize']) + '-' + str(args['elitism'])
+    py_out = open('dumps/' + file_name, 'w')
+    dump(mean_history, py_out)
+    # simple_plot(mean_history, 'Geração', 'Fitness (000s)')
