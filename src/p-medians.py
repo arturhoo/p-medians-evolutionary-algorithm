@@ -39,7 +39,10 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
         'best_i': pop[0].fitness,
         'generation': 0,
         'better_sons': 0,
-        'total_sons': 0
+        'total_sons': 0,
+        'best_i_hist': [pop[0].fitness],
+        'mean_fitness_hist': [sum([i.fitness for i in pop]) / popsize],
+        'repeated_i_hist': [popsize - unique_individuals(pop)]
     }
     for generation in range(gener):
         # applying elitism if relevant
@@ -76,7 +79,10 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
                 new_pop.pop()
                 report['total_sons'] -= 1
         pop = rank_population(new_pop)
-
+        report['best_i_hist'].append(pop[0].fitness)
+        report['mean_fitness_hist'].append(sum([i.fitness for i in pop]) /
+                                                  popsize)
+        report['repeated_i_hist'].append(popsize - unique_individuals(pop))
         if report['best_i'] > pop[0].fitness:
             report['best_i'] = pop[0].fitness
             report['generation'] = generation
@@ -84,10 +90,8 @@ def evolve(G, p, popsize, gener, mutprob, coprob, tsize, elitism=None):
             report['worst_i'] = pop[-1].fitness
 
     t2 = clock()
-    report['repeated_i'] = popsize - unique_individuals(pop)
-    report['mean_fitness'] = sum([i.fitness for i in pop]) / popsize
     report['time'] = round(t2 - t1, 3)
-    pprint(report)
+    report['gener_per_s'] = gener / report['time']
     return report
 
 
@@ -103,10 +107,15 @@ if __name__ == '__main__':
     parser.add_argument('-e', '--elitism', type=float,
                         help='use of elitism')
     args = vars(parser.parse_args())
-    for k, v in args.iteritems():
-        print k + ': ' + str(v)
 
     G = get_graph(args['inst'])
     p = get_number_of_medians(args['inst'])
+    print '---Parameters:'
+    for k, v in args.iteritems():
+        print k + ': ' + str(v)
+    print 'p:', str(p)
+
     report = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
                     args['coprob'], args['tsize'], args['elitism'])
+    print '---Report:'
+    pprint(report)
