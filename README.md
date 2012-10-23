@@ -51,6 +51,29 @@ Here is a sample parameters configuration:
 
     $ python src/p-medians.py data/SJC1.dat 200 250 0.1 0.6 2 -e 0.1
 
+and here is the sample output explained(simplified for clarity):
+
+    ---Parameters:
+    tsize: 2
+    gener: 50
+    popsize: 5
+    elitism: 0.1
+    inst: data/SJC1.dat
+    mutprob: 0.1
+    coprob: 0.6
+    p: 10
+    ---Report:
+    {'best_i': 6,  # fitness of the best individual
+     'best_i_hist': [12, (...), 6],  # fitness of the best individual at each generation
+     'better_sons': 40,  # total number of sons that have better fitness than their parents
+     'generation': 44,  # generation on which first appeared the best overall individual
+     'mean_fitness_history': [10, (...), 9],  # mean fitness the population at each generation
+     'repeated_i_hist': [2, (...), 4]  # number of repeated individuals at each generation
+     'time': 0.326,  # time spent in the evolutionary process
+     'total_sons': 123,  # totnal number of sons generated through crossover
+     'worst_i': 28  # fitness of the worst individual in the final generation
+    }
+
 ### Configuring your Python Environment
 
 These instruction are for the configuration of the Python environment under
