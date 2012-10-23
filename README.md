@@ -49,7 +49,7 @@ parameters, as follows:
 
 Here is a sample parameters configuration:
 
-    $ python p-medians.py ../data/SJC1.dat 200 250 0.1 0.6 2 -e 0.1
+    $ python src/p-medians.py data/SJC1.dat 200 250 0.1 0.6 2 -e 0.1
 
 ### Configuring your Python Environment
 
@@ -100,7 +100,7 @@ Every Python package we install from now on will be installed only in the
 
 That's it! The environment is now setup and we should be able to run the code
 
-    (pmea)$ python p-medians.py ../data/SJC1.dat 200 250 0.1 0.6 2 -e 0.1
+    (pmea)$ python src/p-medians.py data/SJC1.dat 200 250 0.1 0.6 2 -e 0.1
 
   [instances]: http://www.lac.inpe.br/~lorena/instancias.html
   [networkx]: http://networkx.lanl.gov/index.html
