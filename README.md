@@ -66,6 +66,7 @@ and here is the sample output explained(simplified for clarity):
     {'best_i': 6,  # fitness of the best individual
      'best_i_hist': [12, (...), 6],  # fitness of the best individual at each generation
      'better_sons': 40,  # total number of sons that have better fitness than their parents
+     'gener_per_s': 153.37  # number of generations per second
      'generation': 44,  # generation on which first appeared the best overall individual
      'mean_fitness_history': [10, (...), 9],  # mean fitness the population at each generation
      'repeated_i_hist': [2, (...), 4]  # number of repeated individuals at each generation
