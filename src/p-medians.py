@@ -108,51 +108,5 @@ if __name__ == '__main__':
 
     G = get_graph(args['inst'])
     p = get_number_of_medians(args['inst'])
-    reports = []
-    for i in range(10):
-        report = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
-                        args['coprob'], args['tsize'], args['elitism'])
-        reports.append(report)
-
-    summary = {}
-    for k in reports[0].keys():
-        nums = [x[k] for x in reports]
-        summary[k] = {}
-        summary[k]['mean'] = sum(nums) / len(nums)
-        nums2 = [pow(x - summary[k]['mean'], 2) for x in nums]
-        summary[k]['std'] = sqrt(sum(nums2) / len(nums2))
-    pprint(summary)
-
-    import sys
-    sys.stdout.write(str(round(summary['best_i']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['best_i']['std'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['generation']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['generation']['std'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['worst_i']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['worst_i']['std'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['mean_fitness']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['mean_fitness']['std'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['repeated_i']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['repeated_i']['std'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['time']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['time']['std'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['better_sons']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['better_sons']['std'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['total_sons']['mean'], 3)))
-    sys.stdout.write(';')
-    sys.stdout.write(str(round(summary['total_sons']['std'], 3)))
-    sys.stdout.write(';')
+    report = evolve(G, p, args['popsize'], args['gener'], args['mutprob'],
+                    args['coprob'], args['tsize'], args['elitism'])
