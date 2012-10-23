@@ -1,11 +1,12 @@
 \documentclass[12pt]{article}
 \usepackage{sbc-template}
 \usepackage{graphicx}
+\usepackage[lofdepth,lotdepth]{subfig}
 \usepackage{graphics}
 \usepackage{amsmath}
+\usepackage{wrapfig}
 \usepackage{booktabs}
 \usepackage{rotating}
-\usepackage{subfigure}
 \usepackage{times,amsmath,epsfig}
 \usepackage{url}
 \usepackage{multirow}
@@ -22,26 +23,9 @@
 \usepackage[latin1]{inputenc}
 \usepackage{enumitem}
 
-\lstset{ %
-language=Gnuplot,                  % choose the language of the code
-basicstyle=\footnotesize,       % the size of the fonts that are used for the code
-numbers=left,                   % where to put the line-numbers
-numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
-stepnumber=2,                   % the step between two line-numbers. If it's 1 each line will be numbered
-numbersep=5pt,                  % how far the line-numbers are from the code
-backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
-showspaces=false,               % show spaces adding particular underscores
-showstringspaces=false,         % underline spaces within strings
-showtabs=false,                 % show tabs within strings adding particular underscores
-frame=single,	                % adds a frame around the code
-tabsize=2,	                    % sets default tabsize to 2 spaces
-captionpos=b,                   % sets the caption-position to bottom
-breaklines=true,                % sets automatic line breaking
-breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
-title=\lstname,                 % show the filename of files included with \lstinputlisting; also try caption instead of title
-}
 
-\setlist{nolistsep}
+
+% \setlist{nolistsep}
 
 \sloppy
 
@@ -169,15 +153,54 @@ Tendo sido idenficados os melhores parâmetros para a instância base, estes foram
 
 \subsection{Resultados}
 
-A sequência de avaliação dos parâmetros descrita na seção anterior feita na base \textit{SJC1.dat} pode ser vista na tabela \ref{tabela1}. A primeira alteração realizada sob os parâmetros iniciais, um aumento para 500 gerações, sinalizou para uma melhora na qualidade da solução, o erro caiu de 18.3\% para 16.0\%, todavia, a solução foi encontrada, em média, na geração 235, indicando que o alto numéro de gerações não contribuiu plenamente para a qualidade da solução. Como consequência do prematuro encontro da melhor solução, a configuração apresentou uma das menores \textit{fitness} médias. Outro detalhe interessante dessa configuração é a baixa porcentagem de filhos melhores que os pais na operação de \textit{crossover}.
+A sequência de avaliação dos parâmetros descrita na seção anterior feita na base \textit{SJC1.dat} pode ser vista na tabela \ref{tabela1}. A primeira alteração realizada sob os parâmetros iniciais, um aumento para 500 gerações, sinalizou para uma melhora na qualidade da solução, o erro caiu de 18.3\% para 16.0\%, todavia, a solução foi encontrada, em média, na geração 235, indicando que o alto numéro de gerações não contribuiu plenamente para a qualidade da solução. Como consequência do prematuro encontro da melhor solução, a configuração apresentou uma das menores \textit{fitness} médias. Outro detalhe interessante dessa configuração é a baixa porcentagem de filhos melhores que os pais na operação de \textit{crossover}. Uma visão para gerações até 4950, número de vértices no grafo dessa instância, pode ser visto na figura \ref{fig_gener}.
 
-Em seguida, tendo sido retornado o valor do número de gerações para o valor inicial, foi elevado o tamanho da população para 500, o que resultou numa melhora significativa, diminuindo o erro da solução encontrada para 11.8\%. Realizando novamente o aumento do número de gerações para 500, o erro reduziu ainda mais, chegando ao índice de 9.2\%, entretando, ficou evidenciado o grande número de indíviduos repetidos na solução final, e novamente o ``desperdício'' de gerações (a melhor solução foi encontrada, em média, na geração 257). Conclui-se que bons valores para os parâmetro tamanho da população e número de gerações são 200 e 250, respectivamente.
+\begin{figure}[h!]
+    \centering
+    \subfloat[][Geração e a \textit{fitness}]{
+        \includegraphics[width=0.5\textwidth]{../src/plots/gener_impact.pdf}
+        \label{fig_gener}
+    }
+    \subfloat[][Impacto do tamanho da população na \textit{fitness}]{
+        \includegraphics[width=0.5\textwidth]{../src/plots/popsize_impact.pdf}
+        \label{fig_popsize}
+    }
+    \caption{Número de Gerações e Tamanho da População }
+\end{figure}
 
-A avaliação continuou, dessa vez avaliando o aumento da probabilidade de \textit{crossover} para 0.6 para 0.8, o que não representou nenhuma melhora significativa, o que levou a manutenção do valor desse parâmetro em 0.6. Em seguida, foi alterado o valor da probabilidade de mutação, o que causa uma diminuição na pressão seletiva. A primeira alteração de 0.001 para 0.01 não trouxe melhoras visíveis a não ser o encontro da solução em uma geração mais avançada, mas alteração seguinte, para 0.1, implicou diretamente na melhora da solução, fazendo com que o erro caísse de 11.7\% para 9.8\%. Esse valor foi considerado ideal, ao ser evidenciado que um aumento para 0.3 nesse parâmetro implicou num retorno ao valor do erro anterior: 11.4\%, não obstante o número de indivíduos repetidos tenha caído de 27, em média, para 19.
+Em seguida, tendo sido retornado o valor do número de gerações para o valor inicial, foi elevado o tamanho da população para 500, o que resultou numa melhora significativa, diminuindo o erro da solução encontrada para 11.8\%. Realizando novamente o aumento do número de gerações para 500, o erro reduziu ainda mais, chegando ao índice de 9.2\%, entretando, ficou evidenciado o grande número de indíviduos repetidos na solução final, e novamente o ``desperdício'' de gerações (a melhor solução foi encontrada, em média, na geração 257). Uma avaliação mais profunda sobre o impacto do tamanho da população pode ser encontrado na figura \ref{fig_popsize}, onde fica claro que o aumento nesse valor implica, até certo ponto, em uma menor pressão seletiva. Conclui-se que bons valores para os parâmetro tamanho da população e número de gerações são 200 e 250, respectivamente.
 
-Adiante, avaliou-se o impacto do tamanho do torneio. O valor inicial de 2 foi elevado para 5, o que ocasionou numa solução pior: o erro subiu de 9.8\% para 11.2\%. Assim, o valor de 2 para esse parâmetro foi mantido no restante da avaliação.
+O estudo continuou, dessa vez avaliando o aumento da probabilidade de \textit{crossover} para 0.6 para 0.8, o que não representou nenhuma melhora significativa, o que levou a manutenção do valor desse parâmetro em 0.6. Essa estabilidade pode ser observada na figura \ref{fig_coprob}. Em seguida, foi alterado o valor da probabilidade de mutação, o que causa uma diminuição na pressão seletiva. A primeira alteração de 0.001 para 0.01 não trouxe melhoras visíveis a não ser o encontro da solução em uma geração mais avançada, mas alteração seguinte, para 0.1, implicou diretamente na melhora da solução, fazendo com que o erro caísse de 11.7\% para 9.8\%. Esse valor foi considerado ideal, ao ser evidenciado que um aumento para 0.3 nesse parâmetro implicou num retorno ao valor do erro anterior: 11.4\%, não obstante o número de indivíduos repetidos tenha caído de 27, em média, para 19. O gráfico da figura \ref{fig_mutprob} evidencia a diminuição da pressão seletiva com o aumento da probabilidade de mutação.
 
-A retirada do elitismo ocasionou uma piora signficante no melhor valor da \textit{fitness}, quando o erro subiu de 9.8\% para 20.3\%. Além disso, essa melhor solução foi encontrada demasiadamente cedo, em média, na geração 68. Em contrapartida, um aumento no valor, passando de 0.01 para 0.1, resultou na melhor configuração encontrada para a avaliação experimentou: um erro médio de 5.65\%, sendo, além disso, o terceiro conjunto de parâmetros mais rápido entre os testados, definitivamente uma ótima configuração, que foi inclusive usada nas instâncias restantes. A título de experimentação, ainda foi experimentado uma última configuração que diminui a pressão seletiva ao definir a probabilidade de mutação em 0.3 e o fator de elitismo em 0.25; essa configuração se mostrou também muito boa, com um erro médio de 5.9\%, a terceira melhor \textit{fitness} média e a segunda execução mais rápida.
+\begin{figure}[h!]
+    \centering
+    \subfloat[][Impacto da probabilidade de \textit{crossover} na \textit{fitness}]{
+        \includegraphics[width=0.5\textwidth]{../src/plots/coprob_impact.pdf}
+        \label{fig_coprob}
+    }
+    \subfloat[][Impacto da probabilidade de mutação na \textit{fitness}]{
+        \includegraphics[width=0.5\textwidth]{../src/plots/mutprob_impact.pdf}
+        \label{fig_mutprob}
+    }
+    \caption{\textit{Crossover} e Mutação}
+\end{figure}
+
+Adiante, avaliou-se o impacto do tamanho do torneio. O valor inicial de 2 foi elevado para 5, o que ocasionou numa solução pior: o erro subiu de 9.8\% para 11.2\%. Assim, o valor de 2 para esse parâmetro foi mantido no restante da avaliação. Uma análise mais completo do tamanho do torneio na qualidade da solução pode ser feita a partir do gráfico da figura \ref{fig_tsize}, onde percebe-se a elevação nesse valor não traz benefícios e a pressão seletiva permanece a mesma.
+
+Por fim, a retirada do elitismo ocasionou uma piora signficantiva no melhor valor da \textit{fitness}, quando o erro subiu de 9.8\% para 20.3\%. Além disso, essa melhor solução foi encontrada demasiadamente cedo, em média, na geração 68. Em contrapartida, um aumento no valor, passando de 0.01 para 0.1, resultou na melhor configuração encontrada para a avaliação experimental: um erro médio de 5.65\%, sendo, além disso, o terceiro conjunto de parâmetros mais rápido entre os testados, definitivamente uma ótima configuração, que foi inclusive usada nas instâncias restantes. Esses resultados podem ser constatados no gráfico da tabela \ref{fig_elitism}, onde fica claro que o aumento do fator de elitismo ocasiounou um aumento da pressão seletiva e também uma melhora na qualidade da solução. A título de experimentação, ainda foi experimentado uma última configuração com probabilidade de mutação de 0.3 e fator de elitismo de 0.25; essa configuração se mostrou também muito boa, com um erro médio de 5.9\%, a terceira melhor \textit{fitness} média e a segunda execução mais rápida.
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[][Impacto do tamanho do torneio na \textit{fitness}]{
+        \includegraphics[width=0.5\textwidth]{../src/plots/tsize_impact.pdf}
+        \label{fig_tsize}
+    }
+    \subfloat[][Impacto do fator de elitismo na \textit{fitness}]{
+        \includegraphics[width=0.5\textwidth]{../src/plots/elitism_impact.pdf}
+        \label{fig_elitism}
+    }
+    \caption{Tamanho do Torneio e Elitismo}
+\end{figure}
 
 Dessa maneira, chegou-se a melhor configuração, que foi utilizada nas demais instâncias:
 
@@ -185,7 +208,7 @@ Dessa maneira, chegou-se a melhor configuração, que foi utilizada nas demais ins
     \item tamanho da população: 200
     \item número de gerações: 250
     \item probabilidade de mutação: 0.1
-    \item probabilidade de \textit{crossover}: 0.1
+    \item probabilidade de \textit{crossover}: 0.6
     \item tamanho do torneio: 2
     \item fração de elitismo: 0.1
 \end{itemize}
@@ -223,7 +246,7 @@ Finalmente, essa configuração se mostrou também boa nas demais instâncias, \text
   \caption{Melhor configuração de parâmetros aplicada às demais instâncias}
     \resizebox{\columnwidth}{!}{%
     \begin{tabular}{lc|c|c|c|c|c|c|c|c|c|c|c|c|c}
-    \toprule
+    \toprule[0.18em]
     \multirow{2}{*}{Instância} & \multicolumn{2}{c}{Melhor Fitness} & \multicolumn{1}{c}{Erro} & \multicolumn{2}{c}{na Geração} & \multicolumn{2}{c}{Pior Fitness} & \multicolumn{2}{c}{Fitness Média} & \multicolumn{2}{c}{Indiv. Rep.} & \multicolumn{2}{c}{Tempo de Exec.(s)} & \multicolumn{1}{c}{Filhos Melhores(\%)} \\
     \cmidrule{2-15}
     \multicolumn{1}{c}{}& \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} & \multicolumn{1}{c}{Desvio P.} & \multicolumn{1}{c}{Média} \\
@@ -246,8 +269,7 @@ Tendo em vista a adoção de uma outra heurística para o assinalamento de facilida
 
 No caso do trabalho em questão, isso ficou mais evidente, ao ser observado que uma heurística orientada pela busca aleatória no espaço de soluções (através de mutações mais frequentes) produziu melhores soluções que a busca puramente evolucionária através de cruzamento.
 
-Finalmente, fica sinalizado para trabalhos futuros, a avaliação da utilização de outros conceitos como \textit{niching} e otimização multi-objetiva. As restrições de desempenho do algoritmo também sugerem a avaliação de uma abordagem evolucionária paralela para a solução desse problema.
-
+Finalmente, fica sinalizado para trabalhos futuros, a avaliação da utilização de outros conceitos como \textit{niching} e otimização multi-objetiva que podem aperfeiçoar ainda mais a heurística. As restrições de desempenho do algoritmo também sugerem o estudo de uma abordagem evolucionária paralela para a solução desse problema.
 
 
 \nocite{*}
