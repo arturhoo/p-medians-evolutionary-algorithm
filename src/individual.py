@@ -65,8 +65,8 @@ class Individual:
 
     def calculate_fitness(self, G, nodes_ordered_by_demand):
         '''calculates the fitness of the individual. The heuristic used to
-        allocate facilities do medians is to allocate the facilities with
-        greater demand first
+        allocate facilities to medians consists of allocating the facilities
+        with greater demands first
         '''
         self.fitness = 0
         # creates dict of median's capacities
