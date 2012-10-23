@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import networkx as nx
 from math import sqrt
 from sys import exit, exc_info

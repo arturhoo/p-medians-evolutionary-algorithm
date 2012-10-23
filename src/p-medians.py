@@ -1,12 +1,12 @@
+# -*- coding: utf-8 -*-
 from individual import Individual, mutate, crossover
 from custom_io import get_graph, get_number_of_medians
 from random import sample, random
 from copy import deepcopy
-from math import ceil, sqrt
+from math import ceil
 from argparse import ArgumentParser
 from pprint import pprint
 from time import clock
-# from numpy import array
 
 
 def unique_individuals(pop):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from unittest import TestCase, main as unittestMain
 from custom_io import get_graph
 from individual import Individual, crossover, mutate
