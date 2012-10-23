@@ -43,11 +43,11 @@
 
 \section{INTRODUÇÃO}
 
-Problemas de localização de facilidades tem diversas aplicações em telecomunicações, transportes, orquestração de tarefas e distribuição. Uma importante maneira de medir a eficácia de uma localidade de uma facilidade é avaliando o decaimento da média (total) das distancias em função do aumento da acessibilidade e eficiência da facilidade. O problema da $p$-Mediana é um dos problemas mais conhecidos no âmbito de localização de facilidades e aplica essa avaliação ao tentar minimizar a distancia (total) entre as demandas e um numero $p$ de localidades selecionados, chamadas de medianas. O custo total da solução é a soma das distancias entre os pontos de demanda e as medianas.
+Problemas de localização de facilidades têm diversas aplicações em telecomunicações, transportes, orquestração de tarefas e distribuição. Uma importante maneira de medir a eficácia de uma localidade de uma facilidade é avaliando o decaimento da média (total) das distâncias em função do aumento da acessibilidade e eficiência da facilidade. O problema da $p$-Mediana é um dos problemas mais conhecidos no âmbito de localização de facilidades e aplica essa avaliação ao tentar minimizar a distância (total) entre as demandas e um número $p$ de localidades selecionados, chamadas de medianas. O custo total da solução é a soma das distâncias entre os pontos de demanda e as medianas.
 
-No problema da $p$-Mediana não capacitado, é considerado que cada facilidade candidata a se tornar mediana pode satisfazer um número ilimitado de pontos de demanda. Em contraste, no problema da $p$-Mediana capacitado, cada facilidade candidata a mediana tem uma capacidade fixa, i.e. um número máximo de unidades de demanda que ela pode satisfazer. Esse problema é NP-Difícil e, portanto, mesmo heurísticas especializadas em resolver esse problema demandam um esforço computacional considerável.
+No problema da $p$-Mediana não capacitado, é considerado que cada facilidade candidata a se tornar mediana pode satisfazer um número ilimitado de pontos de demanda. Em contraste, no problema da $p$-Mediana capacitado, cada facilidade candidata à mediana tem uma capacidade fixa, isto é, um número máximo de unidades de demanda que ela pode satisfazer. Esse problema é NP-Difícil, portanto, mesmo heurísticas especializadas em resolve-lô demandam um esforço computacional considerável.
 
-Nesse trabalho o problema da $p$-Mediana capacitado é resolvido através de algoritmos genéticos. Adicionalmente, é empregada uma técnica para o assinalamento de pontos de demanda às $p$ medianas candidatas. Para avaliar a qualidade dessa heurística, o método é avaliado em comparação a solução ótima para algumas instancias selecionadas. Finalmente, é feita uma avaliação do impacto de diversos parâmetros nos resultados obtidos.
+Nesse trabalho o problema da $p$-Mediana capacitado é resolvido através de algoritmos genéticos. Adicionalmente, é empregada uma técnica para o assinalamento de pontos de demanda às $p$ medianas candidatas. Para avaliar a qualidade dessa heurística, o método é estudado em comparação a solução ótima para algumas instâncias selecionadas. Finalmente, é feita uma avaliação do impacto de diversos parâmetros nos resultados obtidos.
 
 
 % \section{O PROBLEMA DA $p$-MEDIANA CAPACITADO}
@@ -55,19 +55,19 @@ Nesse trabalho o problema da $p$-Mediana capacitado é resolvido através de algor
 
 \section{MODELAGEM DO ALGORITMO GENÉTICO}
 
-O algoritmo genético (GA) é uma classe de heurísticas adaptativas baseado no conceito de avaliação do ``melhor adaptado''. O algoritmo genético desenvolvido nesse trabalho é detalhado a seguir
+Algoritmo genéticos (GAs) compõem uma classe de heurísticas adaptativas baseadas no conceito de avaliação do ``melhor adaptado''. O algoritmo genético desenvolvido nesse trabalho é detalhado a seguir.
 
 \subsection{Representação do Indivíduo}
 
-Cada individuo (cromossomo) possui exatamente $p$ genes, onde $p$ é o número de medianas, e cada alelo de cada gene representa as coordenadas de uma facilidade e, por consequência, identifica unicamente uma localidade. No GA em questão, o genoma é interpretado como um conjunto de facilidades, no sentido matemático de conjunto, onde não existem elementos duplicados e não há ordem entre esses elementos.
+Cada indivíduo (cromossomo) possui exatamente $p$ genes, onde $p$ é o número de medianas, e cada alelo de cada gene representa as coordenadas de uma facilidade e, por consequência, identifica unicamente uma localidade. No GA em questão, o genoma é interpretado como um conjunto de facilidades, no sentido matemático de conjunto, onde não existem elementos duplicados e não há ordem entre esses elementos.
 
 \subsection{Avaliação da \textit{Fitness}}
 
-Dado que as medianas são selecionadas, cada facilidade é assinalada a uma mediana (como será apresentado adiante) e assim que todos os vértices são estabelecidos, a fitness do indivíduo pode ser computada através da soma das distancias Euclidianas entre cada vértice e sua mediana. A soma mínima é a solução.
+Dado que as medianas são selecionadas, cada facilidade é assinalada à uma mediana (como será apresentado adiante) e assim que todos os vértices são estabelecidos, a \textit{fitness} do indivíduo pode ser computada através da soma das distâncias Euclidianas entre cada vértice e sua mediana. A soma mínima entre um conjunto de indivíduos representa uma solução.
 
 \subsection{Assinalamento de Facilidades}
 
-O assinalamento de facilidades a medianas candidatas, processo necessário ao cálculo da fitness é feito através da alocação das facilidades com maiores demandas primeiro à mediana mais próxima, em termos de distância Euclidiana que tenha capacidade de atender a demanda. Dessa maneira, como cada mediana tem uma capacidade fixa, algumas facilidades terão de ser assinaladas à segunda (ou terceira, quarta...) mediana mais próxima.
+O assinalamento de facilidades à medianas candidatas, processo necessário ao cálculo da \textit{fitness}, é feito através da alocação das facilidades com maiores demandas primeiro à mediana mais próxima, em termos de distância Euclidiana que tenha capacidade de atender a demanda. Dessa maneira, como cada mediana tem uma capacidade fixa, algumas facilidades terão de ser assinaladas à segunda (ou terceira, quarta...) mediana mais próxima.
 
 \subsection{Seleção}
 
@@ -77,9 +77,9 @@ Reprodução é o processo no qual características das soluções são passadas de uma
 
 \subsection{\textit{Crossover}}
 
-O \textit{crossover} usado nesse trabalho inicialmente computa dois vetores denominados vetores de câmbio, um para cada pai, como segue. O vetor de câmbio do pai 1 representa o complemento da interseção entre os cromossomos de ambos os pais em relação ao próprio cromossomo do pai 1, o mesmo é válido para o pai 2. Os conteúdos desses vetores serão cruzados de maneira aleatória e os dois vetores resultantes serão unidos à interseção dos cromossomos dos pais, produzindo dois novos cromossomos de tamanho $p$, denominados filhos.
+O \textit{crossover} usado nesse trabalho inicialmente computa dois vetores denominados vetores de câmbio, um para cada pai, como segue. O vetor de câmbio do pai 1 representa o complemento da interseção entre os cromossomos de ambos os pais em relação ao próprio cromossomo do pai 1, o mesmo ocorre para o vetor 2 em relação ao pai 2. Os conteúdos desses vetores serão cruzados de maneira aleatória e os dois vetores resultantes serão unidos à interseção dos cromossomos dos pais, produzindo dois novos cromossomos de tamanho $p$, denominados filhos.
 
-Se ambos os pais são identicos, somente um deles é passado para a nova geração no processo de reprodução.
+Se ambos os pais são idênticos, somente um deles é passado para a nova geração no processo de reprodução.
 
 \subsection{Mutação}
 
@@ -170,7 +170,7 @@ A sequência de avaliação dos parâmetros descrita na seção anterior feita na base
 
 Em seguida, tendo sido retornado o valor do número de gerações para o valor inicial, foi elevado o tamanho da população para 500, o que resultou numa melhora significativa, diminuindo o erro da solução encontrada para 11.8\%. Realizando novamente o aumento do número de gerações para 500, o erro reduziu ainda mais, chegando ao índice de 9.2\%, entretando, ficou evidenciado o grande número de indíviduos repetidos na solução final, e novamente o ``desperdício'' de gerações (a melhor solução foi encontrada, em média, na geração 257). Uma avaliação mais profunda sobre o impacto do tamanho da população pode ser encontrado na figura \ref{fig_popsize}, onde fica claro que o aumento nesse valor implica, até certo ponto, em uma menor pressão seletiva. Conclui-se que bons valores para os parâmetro tamanho da população e número de gerações são 200 e 250, respectivamente.
 
-O estudo continuou, dessa vez avaliando o aumento da probabilidade de \textit{crossover} para 0.6 para 0.8, o que não representou nenhuma melhora significativa, o que levou a manutenção do valor desse parâmetro em 0.6. Essa estabilidade pode ser observada na figura \ref{fig_coprob}. Em seguida, foi alterado o valor da probabilidade de mutação, o que causa uma diminuição na pressão seletiva. A primeira alteração de 0.001 para 0.01 não trouxe melhoras visíveis a não ser o encontro da solução em uma geração mais avançada, mas alteração seguinte, para 0.1, implicou diretamente na melhora da solução, fazendo com que o erro caísse de 11.7\% para 9.8\%. Esse valor foi considerado ideal, ao ser evidenciado que um aumento para 0.3 nesse parâmetro implicou num retorno ao valor do erro anterior: 11.4\%, não obstante o número de indivíduos repetidos tenha caído de 27, em média, para 19. O gráfico da figura \ref{fig_mutprob} evidencia a diminuição da pressão seletiva com o aumento da probabilidade de mutação.
+O estudo continuou, dessa vez avaliando o aumento da probabilidade de \textit{crossover} para 0.6 para 0.8, o que não representou nenhuma melhora significativa, levando à manutenção do valor desse parâmetro em 0.6. Essa estabilidade pode ser observada na figura \ref{fig_coprob}. Em seguida, foi alterado o valor da probabilidade de mutação, o que causa uma diminuição na pressão seletiva. A primeira alteração de 0.001 para 0.01 não trouxe melhoras visíveis a não ser o encontro da solução em uma geração mais avançada, mas alteração seguinte, para 0.1, implicou diretamente na melhora da solução, fazendo com que o erro caísse de 11.7\% para 9.8\%. Esse valor foi considerado ideal, pois, ao ser evidenciado que um aumento para 0.3 nesse parâmetro implica num retorno ao valor do erro anterior: 11.4\%, não obstante o número de indivíduos repetidos tenha caído de 27, em média, para 19. O gráfico da figura \ref{fig_mutprob} evidencia a diminuição da pressão seletiva com o aumento da probabilidade de mutação.
 
 \begin{figure}[h!]
     \centering
@@ -212,6 +212,15 @@ Dessa maneira, chegou-se a melhor configuração, que foi utilizada nas demais ins
     \item tamanho do torneio: 2
     \item fração de elitismo: 0.1
 \end{itemize}
+
+Tendo essa configuração em vista, a figura \ref{fig_rep_ind_mean_fit} mostra como a quantidade de indivíduos repetidos cresce com o processo evolucionário, ao passo que a fitness média tende a diminuir.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{../src/plots/rep_ind_mean_fit.pdf}
+    \caption{Número de indivíduos repetidos e \textit{fitness} média}
+    \label{fig_rep_ind_mean_fit}
+\end{figure}
 
 Finalmente, essa configuração se mostrou também boa nas demais instâncias, \textit{SJC2.dat, SJC3b.dat} e \textit{SJC4a.dat}, obtendo erros de 4.12\%, 6.04\% e 9.96\% respectivamente. Possiíveis fontes de melhorias estão no aumento do tamanho da população e do número de gerações proporcionalmente ao número de arestas dos grafos dessas instâncias. Detalhes adicionais para essas instâncias podem ser encontrados na tabela \ref{tabela2}.
 
@@ -271,6 +280,7 @@ No caso do trabalho em questão, isso ficou mais evidente, ao ser observado que u
 
 Finalmente, fica sinalizado para trabalhos futuros, a avaliação da utilização de outros conceitos como \textit{niching} e otimização multi-objetiva que podem aperfeiçoar ainda mais a heurística. As restrições de desempenho do algoritmo também sugerem o estudo de uma abordagem evolucionária paralela para a solução desse problema.
 
+\newpage
 
 \nocite{*}
 \bibliographystyle{sbc}
